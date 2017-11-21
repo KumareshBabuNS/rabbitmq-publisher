@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public interface PublisherService {
-	public void publish(String host, String queue, String message) throws IOException, TimeoutException, InterruptedException;
+	public void publish(String exchange, String routingKey, String message) throws IOException, TimeoutException, InterruptedException;
 }

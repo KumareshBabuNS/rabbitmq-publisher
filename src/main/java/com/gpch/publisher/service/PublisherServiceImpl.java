@@ -8,14 +8,19 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public class PublisherServiceImpl implements PublisherService {
+	
+	private static final String HOST = "localhost";
+	private static final String USER = "guest";
+	private static final String PASSWORD = "admin";
 
-	public void publish(String host, String queue, String message) throws IOException, TimeoutException, InterruptedException {
+	public void publish(String exchange, String routingKey, String message) throws IOException, TimeoutException, InterruptedException {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(host);
+		factory.setHost(HOST);
+		factory.setUsername(USER);
+		factory.setPassword(PASSWORD);
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-		channel.queueDeclare(queue, false, false, false, null);
-		channel.basicPublish("", queue, null, message.getBytes());
+		channel.basicPublish(exchange, routingKey, null, message.getBytes());
 		channel.close();
 		connection.close();
 	}
