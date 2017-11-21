@@ -1,28 +1,21 @@
 package com.gpch.publisher;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import com.rabbitmq.client.Channel;
+import com.gpch.publisher.service.PublisherService;
+import com.gpch.publisher.service.PublisherServiceImpl;
 
 public class Publisher {
-	private final static String QUEUE_NAME = "hello";
+	
+	private static final String QUEUE = "hello";
+	private static final String HOST = "localhost";
 
-	public static void main(String[] argv) throws java.io.IOException, TimeoutException, InterruptedException {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
-		Connection connection = factory.newConnection();
-		Channel channel = connection.createChannel();
-		channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-		for (int i = 0; i <5; i++) {
-			String message = "Hello World! id: " + i;
-			channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-			System.out.println(" [x] Sent '" + message + "'");
+	public static void main(String[] args) throws InterruptedException, IOException, TimeoutException {
+		PublisherService publisherService = new PublisherServiceImpl();
+		for (int i = 1; i <= 10; i++) {
+			publisherService.publish(HOST, QUEUE, "New message with id: " + i);
 			Thread.sleep(5000);
 		}
-		channel.close();
-		connection.close();
 	}
 }
